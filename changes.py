@@ -1,3 +1,20 @@
+import tkinter as t
+import random
+from tkinter.simpledialog import askinteger
+from tkinter.simpledialog import askstring
+
+#################### Tool             ###################
+def YfromPosition(p):
+    return (p - 1) // 10
+
+def XfromPosition(p):
+    x = p % 10 
+    if YfromPosition(p) % 2 == 0 : #even 
+        if x == 0 : return 10
+        return x 
+    else: #odd
+        return 10 - x
+        
 class Player():
 
     def __init__(self,name):
