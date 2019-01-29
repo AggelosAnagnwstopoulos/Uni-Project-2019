@@ -1,12 +1,20 @@
 ##################### Group project for python courses 2018 ####################
 
+
 ##################### Imports section ####################
-import tkinter as t
+try:
+    import tkinter as t
+except ImportError:
+    import Tkinter as t
 import random
 import time
-from tkinter.simpledialog import askinteger
-from tkinter.simpledialog import askstring
-
+try:
+    from tkinter.simpledialog import askinteger
+    from tkinter.simpledialog import askstring
+except ImportError:
+    from Tkinter.simpledialog import askinteger
+    from Tkinter.simpledialog import askstring
+    
 #################### Level 1 Toolkit ###################
 
 def YfromPosition(p):
@@ -51,7 +59,7 @@ class Menu():
         self.canvas1=t.Canvas(self.window, width = 400, height = 400)
         self.canvas1.pack()
         #Background picture
-        self.photo=t.PhotoImage(file="Project\Images\snake.gif")
+        self.photo=t.PhotoImage(file="snake.gif")
         self.canvas1.create_image(0,0, anchor=t.NW, image=self.photo)
         self.main_menu()
         self.window.mainloop()
@@ -70,14 +78,14 @@ class Menu():
         Pressing one of the buttons will result in playing that level"""
         self.main_menu_killer()
         #First level
-        self.photo1=t.PhotoImage(file="Project\Images\level1.gif")
+        self.photo1=t.PhotoImage(file="level1.gif")
         self.canvas1.create_image(50,100, anchor=t.NW, image=self.photo1)
         self.level1=t.Button(self.window,text="Level 1",bg="green",fg="white",command=self.level_1)
         self.level1.place(x=80,y=210)
         self.text1=t.Label(self.window,text="The classic snakes n' ladders game",bg="green",fg="white")
         self.text1.place(x=15,y=240)
         #Second level
-        self.photo2=t.PhotoImage(file="Project\Images\level2.gif")
+        self.photo2=t.PhotoImage(file="level2.gif")
         self.canvas1.create_image(250,100, anchor=t.NW, image=self.photo2)
         self.level2=t.Button(self.window,text="Level 2",bg="green",fg="white",command=self.level_2)
         self.level2.place(x=280,y=210)
@@ -90,7 +98,7 @@ class Menu():
     def level_back(self):
         """This method deletes the contents of the levels menu and returns the user to the main menu"""
         self.canvas1.delete("all")
-        self.photo = t.PhotoImage(file="Project\Images\snake.gif")
+        self.photo = t.PhotoImage(file="snake.gif")
         self.canvas1.create_image(0,0, anchor=t.NW, image=self.photo)
         self.level1.destroy()
         self.text1.destroy()
@@ -150,18 +158,22 @@ class Level1():
         self.window.title("Snakes n ladders")
         self.window.resizable(0,0)
         self.canvas2=t.Canvas(self.window,width=1000,height=600)
-        self.background=t.PhotoImage(file=r"C:\Users\aggel\Desktop\Python Exams\Project\Images\background1.gif")
+        self.background=t.PhotoImage(file="b1.gif")
         self.canvas2.create_image(0,0,anchor=t.NW,image=self.background)
         self.canvas2.pack()
         self.currentplayer = 0
         self.snl=t.Label(self.window,text="Snakes n Ladders",font=("Helvetica",22),fg="green")
         self.snl.place(x=700,y=30)
-        self.dicebutton=t.Button(self.window,text="Roll the dice",command=self.movement)
+        self.dicebutton=t.Button(self.window,text="Roll the dice",command=self.gameplay)
         self.dicebutton.place(x=780,y=110)
         self.eventlabel=t.Label(self.window,text="Roll the die to begin")
         self.eventlabel.place(x=760,y=80)
+        self.rettomenu=t.Button(self.window,text="Return to menu",font=("Helvetica",10),command=self.quittomenu)
+        self.rettomenu.place(x=650,y=560)
+        self.resetbutton=t.Button(self.window,text="Reset the game",font=("Helvetica",10),command=self.resetgame)
+        self.resetbutton.place(x=850,y=560)
 
-    def movement(self): 
+    def gameplay(self): 
         """Returns a random number from 1 to 6 as to replicate a dice roll and simulates a turn between the players.
         It also keeps track of each player's position and moves them to the designated square if they landed on a snake
         of a ladder. Also takes care of moving each players' piece on the board accordingly."""
@@ -170,7 +182,6 @@ class Level1():
         self.eventlabel.place(x=780,y=80)
         oldposition = self.names[self.currentplayer].position.get()
         newposition = oldposition + diceroll
-        # Check for collision against snake or ladder multiple times
         while newposition in self.snake_squares or newposition in self.ladder_squares: 
             if  newposition in self.snake_squares:
                 newposition = self.snake_squares[newposition]
@@ -180,16 +191,19 @@ class Level1():
         # If he did, then reset his position to 100 to be still visible on the screen
         if newposition >= 100:
             newposition = 100
-            self.eventlabel.config(text = "{} Wins!".format(self.names[self.currentplayer].name))            
+            self.eventlabel.config(text = "{} Wins!".format(self.names[self.currentplayer].name))
+            self.canvas2.delete(self.names[self.currentplayer].pawn)
         self.names[self.currentplayer].position.set(newposition)
         # Calculate change in X and Y
         dy = - (YfromPosition(newposition) - YfromPosition(oldposition))
         dx = XfromPosition(newposition) - XfromPosition(oldposition)
-        # Move the coresponding circle 
-        for i in range (15):
-            time.sleep(0.025)
-            self.canvas2.move(self.names[self.currentplayer].pawn, 4*dx, 4*dy)
+        # Move the coresponding circle
+        for i in range(15):
+            time.sleep(0.020)
+            self.canvas2.move(self.names[self.currentplayer].pawn, dx*4, dy*4)
+            self.dicebutton.config(state="disabled")
             self.canvas2.update()
+        self.dicebutton.config(state="normal")
         # Get the next player
         self.currentplayer += 1
         if self.currentplayer >= len(self.names):
@@ -202,22 +216,44 @@ class Level1():
 
         self.snake_squares = {17: 7, 62: 18, 64: 60, 87: 24, 93: 73, 95: 75, 99: 78}
         self.ladder_squares = {4: 14, 9: 31, 20: 38, 28: 84, 40: 59, 63: 81, 71: 91}
-        self.players= askinteger("Snakes n Ladders","How many players are there?")
-        starting_locations = [(5,548,25,568), (30,548, 50,568), (5,573,25,593), (30,573, 50, 593)]
+        self.players= askinteger("Snakes n Ladders","Enter a player number between 1 and 4")
+        #Η μέρα της μαρμότας
+        while self.players < 1 or self.players > 4:
+            self.players= askinteger("Snakes n Ladders","Enter a player number between 1 and 4")    
+        self.starting_locations = [(5,548,25,568), (30,548, 50,568), (5,573,25,593), (30,573, 50, 593)]
         self.names = []
         for i in range(0,self.players):
             name = askstring("Snakes n Ladders","What is the name of player {}".format(i+1))
             player = Player(name)
-            player.pawn = self.canvas2.create_oval(starting_locations[i][0],
-                                                   starting_locations[i][1],
-                                                   starting_locations[i][2],
-                                                   starting_locations[i][3],
+            player.pawn = self.canvas2.create_oval(self.starting_locations[i][0],
+                                                   self.starting_locations[i][1],
+                                                   self.starting_locations[i][2],
+                                                   self.starting_locations[i][3],
                                                    fill = Level1.colors[i])
             self.names.append(player)
             playernames=t.Label(self.window,text="{0} is at square:".format(self.names[i].name),fg=Level1.colors[i])
             playernames.place(x=700,y=i*100+200)
             playerposition=t.Label(self.window,textvariable=self.names[i].position)
             playerposition.place(x=900,y=i*100+200)
+
+    def quittomenu(self):
+        """This method is called upon on the menu button while ingame and returns the players to the main menu"""
+        self.window.destroy()
+        self.app = Menu()
+        self.app.main_menu()
+        self.app.window.mainloop()
+    
+    def resetgame(self):
+        """This method resets the board for the players to start anew"""
+        for i in range(0,self.players):
+            self.names[i].position.set(1)
+            self.canvas2.delete(self.names[i].pawn)
+            self.names[i].pawn = self.canvas2.create_oval(self.starting_locations[i][0],
+                                                   self.starting_locations[i][1],
+                                                   self.starting_locations[i][2],
+                                                   self.starting_locations[i][3],
+                                                   fill = Level2.colors[i])
+        self.eventlabel.config(text="Game reset.Replay?")  
 
 class Level2():
     
@@ -230,18 +266,22 @@ class Level2():
         self.window.title("Snakes n ladders")
         self.window.resizable(0,0)
         self.canvas2=t.Canvas(self.window,width=1000,height=510)
-        self.background2=t.PhotoImage(file=r"C:\Users\aggel\Desktop\Python Exams\Project\Images\background2.gif")
+        self.background2=t.PhotoImage(file="b2.gif")
         self.canvas2.create_image(0,0,anchor=t.NW,image=self.background2)
         self.canvas2.pack()
         self.currentplayer = 0
         self.snl=t.Label(self.window,text="Snakes n Ladders",font=("Helvetica",22),fg="green")
         self.snl.place(x=600,y=30)
-        self.dicebutton=t.Button(self.window,text="Roll the dice",command=self.movement)
+        self.dicebutton=t.Button(self.window,text="Roll the dice",command=self.gameplay)
         self.dicebutton.place(x=680,y=110)
         self.eventlabel=t.Label(self.window,text="Roll the die to begin")
         self.eventlabel.place(x=660,y=80)
+        self.rettomenu=t.Button(self.window,text="Return to menu",font=("Helvetica",10),command=self.quittomenu)
+        self.rettomenu.place(x=550,y=480)
+        self.resetbutton=t.Button(self.window,text="Reset the game",font=("Helvetica",10),command=self.resetgame)
+        self.resetbutton.place(x=750,y=480)
 
-    def movement(self): 
+    def gameplay(self): 
         """Returns a random number from 1 to 6 as to replicate a dice roll and simulates a turn between the players.
         It also keeps track of each player's position and moves them to the designated square if they landed on a snake
         of a ladder. Also takes care of moving each players' piece on the board accordingly."""
@@ -260,6 +300,7 @@ class Level2():
         if newposition >= 30:
             newposition = 30
             self.eventlabel.config(text = "{} Wins!".format(self.names[self.currentplayer].name))
+            self.canvas2.delete(self.names[self.currentplayer].pawn)
         self.names[self.currentplayer].position.set(newposition)
         # Calculate change in X and Y
         dy = - (YfromPosition2(newposition) - YfromPosition2(oldposition))
@@ -267,8 +308,10 @@ class Level2():
         # Move the coresponding circle 
         for i in range (25):
             time.sleep(0.025)
-            self.canvas2.move(self.names[self.currentplayer].pawn, dx * (20/6) , dy * 4)    
+            self.canvas2.move(self.names[self.currentplayer].pawn, dx * (20/6) , dy * 4)
+            self.dicebutton.config(state="disabled")
             self.canvas2.update()
+        self.dicebutton.config(state="normal")
         # Get the next player
         self.currentplayer += 1
         if self.currentplayer >= len(self.names):
@@ -280,25 +323,49 @@ class Level2():
         draws their pawns and presents their names and positions on the right"""
         self.snake_squares = {27:1,21:9,19:7,17:4}
         self.ladder_squares = {3:22,5:8,11:26,20:29}
-        self.players= askinteger("Snakes n Ladders","How many players are there?")
-        starting_locations = [(5,448,25,468), (30,448, 50,468), (5,473,25,493), (30,473, 50, 493)]
+        self.players= askinteger("Snakes n Ladders","Enter a player number between 1 and 4")    
+        #Η μέρα της μαρμότας
+        while self.players < 1 or self.players > 4:
+            self.players= askinteger("Snakes n Ladders","Enter a player number between 1 and 4")    
+        self.starting_locations = [(5,448,25,468), (30,448, 50,468), (5,473,25,493), (30,473, 50, 493)]
         self.names = []
         for i in range(0,self.players):
-            name = askstring("Snakes n Ladders","What is the name of player {}".format(i+1))
-            player = Player(name)
-            player.pawn = self.canvas2.create_oval(starting_locations[i][0],
-                                                   starting_locations[i][1],
-                                                   starting_locations[i][2],
-                                                   starting_locations[i][3],
+            self.name = askstring("Snakes n Ladders","What is the name of player {}".format(i+1))
+            player = Player(self.name)
+            player.pawn = self.canvas2.create_oval(self.starting_locations[i][0],
+                                                   self.starting_locations[i][1],
+                                                   self.starting_locations[i][2],
+                                                   self.starting_locations[i][3],
                                                    fill = Level2.colors[i])
             self.names.append(player)
             playernames=t.Label(self.window,text="{0} is at square:".format(self.names[i].name),fg=Level1.colors[i])
             playernames.place(x=600,y=i*100+150)
             playerposition=t.Label(self.window,textvariable=self.names[i].position)
             playerposition.place(x=700,y=i*100+150)
-
+    
+    def quittomenu(self):
+        """This method is called upon on the menu button while ingame and returns the players to the main menu"""
+        self.window.destroy()
+        self.app = Menu()
+        self.app.main_menu()
+        self.app.window.mainloop()
+    
+    def resetgame(self):
+        """This method resets the board for the players to start anew"""
+        for i in range(0,self.players):
+            self.names[i].position.set(1)
+            self.canvas2.delete(self.names[i].pawn)
+            self.names[i].pawn = self.canvas2.create_oval(self.starting_locations[i][0],
+                                                   self.starting_locations[i][1],
+                                                   self.starting_locations[i][2],
+                                                   self.starting_locations[i][3],
+                                                   fill = Level2.colors[i])
+        self.eventlabel.config(text="Game reset. Replay ?")  
 def menu():
-    menu = Menu()
+    try:
+        menu = Menu()
+    except EnvironmentError:
+        print("Are you seriously running on a vm with no $DISPLAY variable dude... What is this a joke ?")
 
 if __name__ == "__main__":
     menu()
