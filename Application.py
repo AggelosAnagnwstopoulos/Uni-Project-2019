@@ -167,7 +167,7 @@ class Level1():
         self.window.title("Snakes n ladders")
         self.window.resizable(0,0)
         self.canvas2=t.Canvas(self.window,width=1000,height=600)
-        self.background=t.PhotoImage(file="b1.gif")
+        self.background=t.PhotoImage(file="background1.gif")
         self.canvas2.create_image(0,0,anchor=t.NW,image=self.background)
         self.canvas2.pack()
         self.currentplayer = 0
@@ -275,7 +275,7 @@ class Level2():
         self.window.title("Snakes n ladders")
         self.window.resizable(0,0)
         self.canvas2=t.Canvas(self.window,width=1000,height=510)
-        self.background2=t.PhotoImage(file="b2.gif")
+        self.background2=t.PhotoImage(file="background2.gif")
         self.canvas2.create_image(0,0,anchor=t.NW,image=self.background2)
         self.canvas2.pack()
         self.currentplayer = 0
