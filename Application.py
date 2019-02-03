@@ -1,13 +1,12 @@
 ##################### "Group" project for python courses 2018-19 ####################
 
-"""Κάποια ακόμα σχόλια για τον κώδικα: 
-1) Προτιμήθηκε η διαγραφή και επανασχεδίαση κάθε μενού αντί της δημιουργίας όλων μαζί και 
-διαχείρηση του αντίστοιχου επιπέδου (μεταφορά στο προσκύνιο του εκάστοτε μενού)
-2) Οι κλάσεις Level 1 , 2 είναι πανομοιότυπες στον κώδικα με διαφορά τον υπολογισμό της μεταβολής dx,dy για την κάθε μια.
-Δεν μπορέσαμε να βρούμε τρόπο να μην γίνει ανακύκλωση κώδικα οπότε δεν είναι και το πιο efficient πρόγραμμα. Παρόλα αυτά δουλεύει ! Thats always nice...
-3) Μετά από αρκετό testing νομίζω πως όλα τα δυνατά exceptions έχουν γίνει κατάλληλα handle, 
-αυτό περιλαμβάνει είτε σχετικό μήνυμα, είτε loop το οποίο απαιτεί σωστό τύπο δεδομένων.
-4) Το πρόγραμμα λειτουργεί και σε παλαιότερες εκδόσεις της python (2.x) (βλ. version control στo Imports Section)."""
+"""Some more comments on the code:
+1) Deletion and recreation of the menu was prefered instead of creating a lot of 
+layers and bringing them to the foreground when used.
+2) Classes Level 1 , 2 are similar looking with and differ on the calculations of dx and dy for moving the pawns.
+While not the most efficient way it works just fine for this project.
+3) After enough testing i can proudly say all exceptions have been handled, either with messages or loops that demand correct inputs
+4) This code works for older versions of python (2.x) (see version ontrol on Imports Section"""
 
 ##################### Imports section ####################
 
